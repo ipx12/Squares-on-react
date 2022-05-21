@@ -1,9 +1,6 @@
 import { Component } from 'react';
 
-import {Wrapper, AddHeightButton, AddWidthButton, RemoveHeightButton, RemoveWidthButton} from './styledComponents'
-import { v4 as uuidv4 } from 'uuid';
-
-import Row from './Row';
+import {Wrapper, AddHeightButton, AddWidthButton, DeleteColumnButton, DeleteRowButton} from './styledComponents'
 
 import './Square.css';
 
@@ -11,114 +8,140 @@ class Square extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			initialWidth: props.initialWidth,
-			initialHeight: props.initialHeight,
 			cellSize: props.cellSize,
 			offsetLeft: 2,
 			offsetTop: 2,
-			columnId: '',
-			rowId: '',
-			deleteColumn: '',
+			activeColumn: '',
+			activeRow: '',
 			dispalayRemoveHigthBtn: false,
 			dispalayRemoveWidthhBtn: false,
-			rows: this.createRows(this.props.initialHeight, this.props.initialWidth)
+			squareStructure: []
 		}
-
 	}
 
-	createRows = (column, row) => {
-		let arr = [];
-		for(let i = 0; i < column; i++) {
-			arr.push(<Row initialWidth={row}
-							cellSize={this.props.cellSize}
-							key={uuidv4()}/>
-					)
+	componentDidMount() {
+		let initialBoard = [];
+
+		for(let i = 0; i < this.props.initialHeight; i++) {
+			let row = [];
+			for(let j = 0; j < this.props.initialWidth; j++) {
+				let cell = [];
+				row.push(cell);
+			} 
+			initialBoard.push(row);
 		}
-		console.log(arr)
-		return arr
+		this.setState({squareStructure: initialBoard})
 	}
+
+	createSquare = () => {
+		let {squareStructure} = this.state
+
+		return squareStructure.map((row, rowIndex) => {
+			return <tr data-row={rowIndex} key={rowIndex}>
+					{
+						row.map((_, cellIndex) => {
+							return <td data-row={rowIndex}
+										data-column={cellIndex}
+										style={{width: this.props.cellSize, height: this.props.cellSize, backgroundColor: 'skyblue'}}
+										key={`row${rowIndex} cell-${cellIndex}`}
+										onMouseOver={(e) => this.onMouseOverUpdate(e)}>	
+							</td>
+						})
+					}
+					</tr>
+		})
+	}
+
+	onMouseOverUpdate = (e) => {
+		if (this.state.offsetLeft !== e.target.offsetLeft) {
+			this.setState(() => ({
+				offsetLeft: e.target.offsetLeft
+			}))
+		}
+
+		if (this.state.offsetTop !== e.target.offsetTop) {
+			this.setState(() => ({
+				offsetTop: e.target.offsetTop
+			}))
+		}
+
+		if (this.state.activeColumn !== e.target.getAttribute('data-column')) {
+			this.setState(() => ({
+				activeColumn: e.target.getAttribute('data-column')
+			}))
+		}
+
+		if (this.state.activeRow !== e.target.getAttribute('data-row')) {
+			this.setState(() => ({
+				activeRow: e.target.getAttribute('data-row')
+			}))
+		}
+	}
+
 
 	onAddColumn = () => {
-		this.setState(({initialWidth, initialHeight}) => ({
-			initialWidth: initialWidth + 1,
-			rows: this.createRows(initialHeight, initialWidth + 1)
-		}))
+		 let {squareStructure} = this.state
+		
+		const newSquare = squareStructure.map(row => {
+			 return [...row, []]
+		 })
+		 this.setState({squareStructure: newSquare})
 	}
 
 	onAddRow = () => {
-		this.setState(({initialHeight, initialWidth}) => ({
-			initialHeight: initialHeight + 1,
-			rows: this.createRows(initialHeight + 1, initialWidth)
+		this.setState(({squareStructure}) => ({
+			squareStructure: [...squareStructure, squareStructure[0]]
 		}))
 	}
 
 
 
 	onDeleteColumn = () => {
-		if(this.state.initialWidth === 1) {
-			return
-		} 
-
-		this.setState(({initialWidth, initialHeight}) => ({
-			initialWidth: initialWidth - 1,
+		let {squareStructure, activeColumn} = this.state;
+		let arr = squareStructure.map(row => {
+			return row.filter(cell => {
+				if (cell !== row[activeColumn]) {
+					return cell;
+				}
+			})
+		})
+		console.log(arr)
+		this.setState(() => ({
+			squareStructure: arr,
 			dispalayRemoveHigthBtn: false,
-			rows: this.createRows(initialHeight, initialWidth - 1),
-
-		}))
-
-		// let arr = this.state.rows.map((item) => {
-		// 	console.log(this.state.columnId)
-		// 	if(item.key !== this.state.columnId) {
-		// 		return item
-		// 	}
-		// });
-		// this.setState({rows: arr})
-	}
-
-	onDeleteRow = (id) => {
-		if(this.state.initialHeight === 1) {
-			return
-		} 
-
-
-		this.setState(({initialWidth, initialHeight}) => ({
-			initialHeight: initialHeight - 1,
 			dispalayRemoveWidthhBtn: false,
-			rows: this.createRows(initialHeight - 1, initialWidth)
 		}))
-
-		// this.setState(({rows, }) => ({
-		// 	rows: rows.filter(item => item.key !== id),
-		// }))
-		// this.state.rows.forEach(item => console.log(item.key))
 	}
 
-	onMouseOver = (e) => {
-		if (e.target.tagName === 'TD' && this.state.offsetLeft !== e.target.offsetLeft) {
-			this.setState(() => ({
-				offsetLeft: e.target.offsetLeft,
-				columnId: e.target.getAttribute('data-column')
-			}))
-		}
+	onDeleteRow = () => {
+		let {squareStructure, activeRow} = this.state;
+		let newArr = [...squareStructure.slice(0, activeRow), ...squareStructure.slice(activeRow + 1, squareStructure.length)]
 		
-		if (e.target.tagName === 'TD' && this.state.offsetTop !== e.target.offsetTop) {
-			this.setState(() => ({
-				offsetTop: e.target.offsetTop,
-				rowId: e.target.parentNode.getAttribute('data-row')
-			}))
-		}
-		
+		this.setState(() => ({
+			squareStructure: newArr,
+			dispalayRemoveHigthBtn: false,
+			dispalayRemoveWidthhBtn: false,
+		}))
 	}
 
-	showButtons = () => {
-		if (this.state.initialHeight > 1) {
+
+	showButtons = (e) => {
+		if (this.state.squareStructure.length > 1) {
 			this.setState(() => ({
 				dispalayRemoveWidthhBtn: true 
 			}))
 		}
-		if (this.state.initialWidth > 1) {
+
+		if (this.state.squareStructure[0].length > 1) {
 			this.setState(() => ({
 				dispalayRemoveHigthBtn: true 
+			}))
+		}
+
+		if (e.target.getAttribute('data-button') === 'addButton') {
+			this.setState(() => ({
+				dispalayRemoveHigthBtn: false,
+				dispalayRemoveWidthhBtn: false
 			}))
 		}
 	}
@@ -131,27 +154,31 @@ class Square extends Component {
 	}
 
 	render() {
-		const {cellSize, offsetLeft, offsetTop, rows, rowId, dispalayRemoveHigthBtn, dispalayRemoveWidthhBtn} = this.state;
+		const {cellSize, offsetLeft, offsetTop, dispalayRemoveHigthBtn, dispalayRemoveWidthhBtn} = this.state;
+
+		let elements = this.createSquare()
+
 		return(
 			<Wrapper onMouseOver={this.showButtons}
 					onMouseLeave={this.removeButtons}>
 				<AddWidthButton cellSize={cellSize}
-								onClick={this.onAddColumn}/>
+								onClick={this.onAddColumn}
+								data-button='addButton'/>
 				<AddHeightButton cellSize={cellSize}
-								 onClick={this.onAddRow}/>
-				<RemoveHeightButton cellSize={cellSize}
+								data-button='addButton'
+								onClick={this.onAddRow}/>
+				<DeleteColumnButton cellSize={cellSize}
 									buttonsDisplay={dispalayRemoveHigthBtn}
 									offsetLeft={offsetLeft}
 									onClick={this.onDeleteColumn}/>
-				<RemoveWidthButton cellSize={cellSize}
+				<DeleteRowButton cellSize={cellSize}
 									buttonsDisplay={dispalayRemoveWidthhBtn}
 									offsetTop={offsetTop}
-									onClick={() => this.onDeleteRow(rowId)}
+									onClick={this.onDeleteRow}
 									/>
-				<table style={{border: '1px solid skyblue'}}
-						onMouseOver={(e) => this.onMouseOver(e)}>
+				<table style={{border: '1px solid skyblue'}}>
 					<tbody>
-						{rows}
+						{elements}
 					</tbody>
 				</table>
 			</Wrapper>
