@@ -11,24 +11,28 @@ export const AddHeightButton = styled.div`
 	left: 2px;
 	background-color: orange;
 	:before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 14px;
-        height: 4px;
-        background-color: #fff;
+	content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 14px;
+		height: 4px;
+		background-color: #fff;
 	}
 	:after {
 		content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 4px;
-        height: 14px;
-        background-color: #fff;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 4px;
+		height: 14px;
+		background-color: #fff;
+	}
+	:hover {
+		opacity: 0.7;
+		cursor: pointer;
 	}
 	${props => `width: ${props.cellSize + 'px'};
 				height: ${props.cellSize + 'px'};
@@ -41,24 +45,28 @@ export const AddWidthButton = styled.div`
     top: 2px;
 	background-color: orange;
 	:before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 14px;
-        height: 4px;
-        background-color: #fff;
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 14px;
+	height: 4px;
+	background-color: #fff;
 	}
 	:after {
 		content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 4px;
-        height: 14px;
-        background-color: #fff;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 4px;
+	height: 14px;
+	background-color: #fff;
+	}
+	:hover {
+		opacity: 0.7;
+		cursor: pointer;
 	}
 	${props => `width: ${props.cellSize + 'px'};
 				height: ${props.cellSize + 'px'};
@@ -71,14 +79,18 @@ export const DeleteRowButton = styled.div`
 	background-color: orangered;
 	transition: all .3s;
 	:before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 14px;
-        height: 4px;
-        background-color: #fff;
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 14px;
+	height: 4px;
+	background-color: #fff;
+	}
+	:hover {
+		opacity: 0.7;
+		cursor: pointer;
 	}
 	${props => `width: ${props.cellSize + 'px'};
 				height: ${props.cellSize + 'px'};
@@ -94,14 +106,18 @@ export const DeleteColumnButton = styled.div`
 	background-color: orangered;
 	transition: all .3s;
 	:before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 14px;
-        height: 4px;
-        background-color: #fff;
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 14px;
+	height: 4px;
+	background-color: #fff;
+	}
+	:hover {
+		opacity: 0.7;
+		cursor: pointer;
 	}
 	${props => `width: ${props.cellSize + 'px'};
 				height: ${props.cellSize + 'px'};
@@ -114,6 +130,6 @@ export const DeleteColumnButton = styled.div`
 export const Td = styled.td`
     background-color: skyblue;
     ${props => `width: ${props.cellSize + 'px'};
-                height: ${props.cellSize + 'px'};
+		height: ${props.cellSize + 'px'};
     `};
 `
